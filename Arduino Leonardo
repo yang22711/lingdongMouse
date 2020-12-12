@@ -1,0 +1,107 @@
+#include "I2Cdev.h"     
+#include "MPU6050.h"    
+#include <Mouse.h>
+#include<SoftwareSerial.h>
+SoftwareSerial mySerial(10,9);        
+MPU6050 mpu;
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+String Serial_String="";
+
+struct MyData {
+  byte X;
+  byte Y;
+  byte Z;
+  byte Xg;
+  byte Yg;
+  byte Zg;
+};
+int a,b1,S=50;
+MyData data;
+int Mode = 48;
+int Xstate = 0;
+unsigned long previousMillis = 0;
+
+long interval = 3000;
+void read_string(){
+  while(mySerial.available()>0){
+  Serial_String+=(char)(mySerial.read());
+  delay(2);}}
+void setup()
+{
+  Serial.begin(9600);
+  mpu.initialize(); 
+  Wire.begin();
+  mySerial.begin(9600);
+   Mouse.begin();
+}
+                      
+void loop()
+{ Xstate = 0;
+  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+  data.X = map(ax, -17000, 17000, 0, 255 ); // X axis data
+  data.Y = map(ay, -17000, 17000, 0, 255);  // Y axis data
+  data.Z = map(az, -17000, 17000, 0, 255); // Y axis data
+  delay(5);
+  if (data.X < 55) {//gesture : left
+  //Serial.println("gestureX DOWN");
+       a=+S;
+    } 
+  else if (data.X > 200) {//gesture : left
+    //Serial.println("gestureX UP");
+       a=-S;
+    }
+  else {a=0;Xstate = 1;} 
+    if (data.Y > 200) {//gesture : left
+     // Serial.println("gestureY RIGHT");
+       b1=+S;
+    }
+  else if (data.Y < 55) {//gesture : left
+     // Serial.println("gestureY LEFT");
+       b1=-S;
+    }
+    else if(Xstate = 1){{//gesture : left
+   //Serial.println("gestureX STAY");
+     unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    if(mySerial.available()>0){
+    Serial_String="";
+    read_string();
+  }
+   Serial.println(Serial_String);
+   Mode = Serial_String[0]-48;
+   S = Serial_String[1]-48;
+  Serial.println("Mode: ");
+  Serial.println(Mode);
+  Serial.println("Sensibility: ");
+  Serial.println(S);
+    previousMillis = currentMillis;
+    if (Mode == 0){;}
+    if (Mode == 1){
+    Mouse.press(MOUSE_LEFT);
+       delay(50);
+    Mouse.release(MOUSE_LEFT);}
+    if (Mode == 2){
+    Mouse.press(MOUSE_RIGHT);
+       delay(50);
+    Mouse.release(MOUSE_RIGHT); 
+    }
+      if (Mode == 3){
+    Mouse.press(MOUSE_LEFT);
+       delay(5);
+    Mouse.release(MOUSE_LEFT);
+    Mouse.press(MOUSE_LEFT);
+       delay(5);
+    Mouse.release(MOUSE_LEFT);}
+  }
+    /* if (!Mouse.isPressed(MOUSE_LEFT)) {
+      Mouse.press(MOUSE_LEFT);}
+      if (Mouse.isPressed(MOUSE_LEFT)) {
+      Mouse.release(MOUSE_LEFT);}*/}
+       b1=0;
+    }
+
+Mouse.move(b1, a, 0);
+
+
+}
