@@ -1,0 +1,50 @@
+
+<scroll-view class="container">
+ <view class="scrolltxt">
+  <view class="marquee_box">
+   <view class="marquee_text" style="transform: translateX(-{{marqueeDistance}}px)">
+    <text>{{text}}</text>
+    <text style="margin-right:{{marquee_margin}}px;"></text>
+    <text style="margin-right:{{marquee_margin}}px;">{{text}}</text>    
+   </view>
+  </view>
+ </view>
+</scroll-view>
+
+<label class="label">当前模式：{{modeValue}}</label>
+
+<label class="label">当前灵敏度：{{sensibilityValue}}</label>
+
+<button bindtap="OneNet_Get" class="button">刷新OneNet数据</button>
+
+<view class='label'>更改模式</view>
+<input value="{{mode}}" bindinput="input1" class="input"></input>
+
+<view class="content">
+<button class="type1" bindtap="t0">无操作</button>
+<button class="type1" bindtap="t1">左键</button>
+</view>
+
+<view class="content">
+<button class="type1" bindtap="t2">右键</button>
+<button class="type1" bindtap="t3">双击</button>
+</view>
+
+<view class='label'>更改灵敏度</view>
+<input value='{{sensibility}}' bindinput="input2" class="input"></input>
+
+
+<view class="content">
+<button class="type1" bindtap="plus">加一</button>
+<button class="type1" bindtap="reduce">减一</button>
+</view>
+
+<button bindtap="upload" class="upload" disabled="{{tapValue}}">上传到OneNet</button>
+
+<view class="p1x">
+<image src="../../images/timg.gif" class="p1"></image>
+</view>
+
+
+
+
